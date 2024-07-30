@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Renumber fields</title>
+    <script src="https://unpkg.com/htmx.org@2.0.1"
+        integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
+    <style>
+        textarea {
+            tab-size: 4;
+        }
+
+        .vcenter {
+            display: flex;
+            align-items: center;
+        }
+
+        .pad-lr {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        function resultsToClip() {
+            let text = document.getElementById("output-text").value;
+            navigator.clipboard.writeText(text);
+        }
+    </script>
+
+    <h2>Renumber service file object member's field ids</h2>
+    <div hx-ext="response-targets">
+        <!-- Also send StatusUnprocessableEntity (422) response to output-text -->
+        <form hx-post="/renum/transform" hx-target="#output-text" hx-target-422="#output-text">
+            <div><label>Paste object fields definitions here</label></div>
+            <div class="vcenter">
+                <textarea name="input-text" rows="20" cols="70"></textarea>
+                <label class="pad-lr">-=></label>
+                <textarea id="output-text" rows="20" cols="70"></textarea>
+            </div>
+            <div>
+                <label>initial field id:
+                    <input type="text" name="initial-id" value="1" size="4">
+                </label>
+                <input type="submit" value="Renumber">
+                <input type="button" value="results to clip" onclick="resultsToClip()">
+            </div>
+        </form>
+    </div>
+</body>

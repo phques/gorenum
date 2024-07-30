@@ -1,33 +1,77 @@
+// Renumerate the fieldId (":id") of an object def from a service file.
+// object Toto
+//
+//	{
+//		string Val1;
+//		int Val2: 200;
+//		byte Val3 = 19	// missing ';' !
+//		string Val4 ;
+//		string Val5="toto" ;
+//	}
+//
+//	==>
+//
+// object Toto
+//
+//	{
+//		string Val1:100;
+//		int Val2:101;
+//		byte Val3 = 19  // not changed,  missing ';'
+//		string Val4:102;
+//		string Val5:103 ="toto" ;
+//	}
 package renumfield
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
+	"io"
+	"regexp"
 )
 
 type Renum struct {
-	fieldId  int
-	lines    [][]byte
-	Newlines [][]byte
+	fieldId int
+	lines   [][]byte
 }
 
-func MakeRenum(initialFieldId int, lines [][]byte) *Renum {
+func MakeRenum(initialFieldId int, reader io.Reader) *Renum {
+	// read lines from the reader
+	lines := readLines(reader)
+
+	// return a new Renum
 	return &Renum{
-		fieldId:  initialFieldId,
-		lines:    lines,
-		Newlines: make([][]byte, 0, len(lines)),
+		fieldId: initialFieldId,
+		lines:   lines,
 	}
 }
 
-// loops through the lines, renumerating them into r.newlines
-func (r *Renum) Renumerate() {
+func readLines(reader io.Reader) [][]byte {
+	lines := make([][]byte, 0)
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Bytes())
+	}
+	return lines
+}
+
+func (r *Renum) NbLines() int {
+	return len(r.lines)
+}
+
+// loops through the lines, renumerating them
+func (r *Renum) Renumerate() [][]byte {
+	newlines := make([][]byte, 0, len(r.lines))
+
 	for _, line := range r.lines {
 		newline, changed := RenumLine(line, r.fieldId)
-		r.Newlines = append(r.Newlines, newline)
+		newlines = append(newlines, newline)
 		if changed {
 			r.fieldId++
 		}
 	}
+
+	return newlines
 }
 
 // Adds / replaces the 'field id' part of the line.
@@ -60,15 +104,16 @@ func RenumLine(line []byte, fieldId int) (newline []byte, changed bool) {
 
 	// strip right of (optional) "="
 	spaceForEqual := ""
-	if idx := bytes.Index(left, []byte("=")); idx > 0 {
+	rexp := regexp.MustCompile(`\s*=\s*`)
+	if loc := rexp.FindIndex(left); loc != nil {
+		idx := loc[0]
 		right = line[idx:]
 		left = left[:idx]
-		spaceForEqual = " "
 	}
 
 	// strip right of ":" (might be missing)
 	if idx := bytes.Index(left, []byte(":")); idx > 0 {
-		// 'right' does not change!
+		// 'right' does not change! i.e. we do not include the old field id
 		left = left[:idx]
 	}
 

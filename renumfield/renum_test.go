@@ -20,7 +20,7 @@ func Test_renum(t *testing.T) {
 		{"//", args{" //", 999}, " //"},
 		{"//", args{" // ttt", 999}, " // ttt"},
 		{"//", args{"xx // ttt", 999}, "xx // ttt"},
-		{"//", args{`xx="nn//bb;" // a comment`, 999}, `xx:999 ="nn//bb;" // a comment`},
+		{"//", args{`xx="nn//bb;" // a comment`, 999}, `xx:999="nn//bb;" // a comment`},
 
 		{";", args{";", 999}, ";"},
 		{";", args{" ;", 999}, " ;"},
@@ -32,7 +32,7 @@ func Test_renum(t *testing.T) {
 		{";", args{"string tt; // xx", 999}, "string tt:999; // xx"},
 		{";", args{`string tt = "abc;def";`, 999}, `string tt:999 = "abc;def";`},
 
-		{"=", args{"tt=111;", 999}, "tt:999 =111;"},
+		{"=", args{"tt=111;", 999}, "tt:999=111;"},
 		{"=", args{"tt =111;", 999}, "tt:999 =111;"},
 		{"=", args{"tt = 111;", 999}, "tt:999 = 111;"},
 		{"=", args{"tt = 111; // xxx", 999}, "tt:999 = 111; // xxx"},
@@ -42,9 +42,9 @@ func Test_renum(t *testing.T) {
 		{":", args{"tt: 222;", 999}, "tt:999;"},
 		{":", args{"tt : 222;", 999}, "tt:999;"},
 
-		{":=", args{"tt:222=xx;", 999}, "tt:999 =xx;"},
+		{":=", args{"tt:222=xx;", 999}, "tt:999=xx;"},
 		{":=", args{"tt:222 =xx;", 999}, "tt:999 =xx;"},
-		{":=", args{"tt:222= xx;", 999}, "tt:999 = xx;"},
+		{":=", args{"tt:222= xx;", 999}, "tt:999= xx;"},
 		{":=", args{"tt:222 = xx;", 999}, "tt:999 = xx;"},
 	}
 	for _, tt := range tests {
