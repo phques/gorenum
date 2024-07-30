@@ -46,7 +46,7 @@ func main() {
 	// create a Renum w. the clipboard lines
 	clipBytes := clipboard.Read(clipboard.FmtText)
 	reader := bytes.NewReader(clipBytes)
-	renum := renumfield.MakeRenum(*initialFieldId, reader)
+	renum := renumfield.NewRenum(*initialFieldId, reader)
 
 	// Renumber
 	fmt.Printf("Renumbering %d lines, starting at field id %d\n", renum.NbLines(), *initialFieldId)

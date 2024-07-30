@@ -35,7 +35,7 @@ type Renum struct {
 	lines   [][]byte
 }
 
-func MakeRenum(initialFieldId int, reader io.Reader) *Renum {
+func NewRenum(initialFieldId int, reader io.Reader) *Renum {
 	// read lines from the reader
 	lines := readLines(reader)
 

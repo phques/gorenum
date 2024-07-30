@@ -35,7 +35,7 @@ func renumHandler(c webhelper.Context) error {
 
 	// create a Renum w. the text & initialId
 	reader := strings.NewReader(text)
-	renum := renumfield.MakeRenum(initialId, reader)
+	renum := renumfield.NewRenum(initialId, reader)
 
 	// Renumber
 	log.Printf("Renumbering %d lines, starting at field id %d\n", renum.NbLines(), initialId)
