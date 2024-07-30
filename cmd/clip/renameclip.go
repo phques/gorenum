@@ -48,8 +48,8 @@ func main() {
 	reader := bytes.NewReader(clipBytes)
 	renum := renumfield.MakeRenum(*initialFieldId, reader)
 
-	// Renumerate
-	fmt.Printf("renumerating %d lines, starting at field id %d\n", renum.NbLines(), *initialFieldId)
+	// Renumber
+	fmt.Printf("Renumbering %d lines, starting at field id %d\n", renum.NbLines(), *initialFieldId)
 	newlines := renum.Renumerate()
 
 	// save results back to clipboard

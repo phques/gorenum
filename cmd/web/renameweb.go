@@ -17,11 +17,11 @@ func homeHandler(c webhelper.Context) error {
 }
 
 func renumHandler(c webhelper.Context) error {
-	// read input data: text
+	// read input data from the form
 	text := c.FormValue("input-text")
-
-	// initial field id
 	initialIdStr := c.FormValue("initial-id")
+
+	// validate initial field id
 	initialId, err := strconv.Atoi(initialIdStr)
 	if err != nil {
 		log.Printf("renumHandler, initialId must be an integer, received [%s]\n", initialIdStr)
@@ -33,13 +33,12 @@ func renumHandler(c webhelper.Context) error {
 		return webhelper.NewError(http.StatusUnprocessableEntity, "Error, initialId should be > 0")
 	}
 
-	// process text / renum	fields
-	// create a Renum w. the text lines
+	// create a Renum w. the text & initialId
 	reader := strings.NewReader(text)
 	renum := renumfield.MakeRenum(initialId, reader)
 
-	// Renumerate
-	log.Printf("renumerating %d lines, starting at field id %d\n", renum.NbLines(), initialId)
+	// Renumber
+	log.Printf("Renumbering %d lines, starting at field id %d\n", renum.NbLines(), initialId)
 	newlines := renum.Renumerate()
 
 	// save results back to the Response
