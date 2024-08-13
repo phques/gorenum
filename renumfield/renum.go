@@ -50,7 +50,9 @@ func readLines(reader io.Reader) [][]byte {
 	lines := make([][]byte, 0)
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Bytes())
+		// get the line as a string, it will do an allocation for us
+		line := scanner.Text()
+		lines = append(lines, []byte(line))
 	}
 	return lines
 }

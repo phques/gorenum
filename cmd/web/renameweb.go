@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"html"
 	"html/template"
 	"log"
 	"net/http"
@@ -45,6 +46,8 @@ func renumHandler(c webhelper.Context) error {
 	// create one slice that holds all the lines,
 	// TODO: will this be ok on Windows? (might need "\n\r")
 	data := bytes.Join(newlines, []byte("\n"))
+	// escape html chars
+	data = []byte(html.EscapeString(string(data)))
 	c.Write(data)
 
 	return nil
